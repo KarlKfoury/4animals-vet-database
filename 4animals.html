@@ -1,0 +1,540 @@
+<html>
+<head>
+<style>
+body {
+height: 100%;
+width: 100%;
+overflow: hidden;
+}
+#clientDiv {
+position: absolute;
+top: 0%;
+left: 0%;
+height: 100%;
+background: rgb(200, 200, 255);
+width: 30%;
+}
+#searchbar {
+position: relative;
+top: 5%;
+left: 20%;
+height: 5%;
+width: 60%;
+}
+#clientelle {
+position: relative;
+top: 5%;
+left: 0%;
+height: 90%;
+width: 100%;
+overflow: scroll;
+}
+#infotable {
+position: absolute;
+top: 0%;
+left: 30%;
+height: 100%;
+background: rgb(240, 240, 255);
+width: 40%;
+}
+#clientD {
+position: absolute;
+top: 0%;
+left: 0%;
+height: 5%;
+background: rgb(200, 220, 255);
+width: 40%;
+}
+#petD {
+position: absolute;
+top: 0%;
+left: 40%;
+height: 5%;
+background: rgb(150, 150, 150);
+width: 30%;
+}
+#genD {
+position: absolute;
+top: 0%;
+left: 70%;
+height: 5%;
+background: rgb(160, 160, 180);
+width: 30%;
+}
+#telD {
+position: absolute;
+top: 5%;
+left: 0%;
+height: 5%;
+background: rgb(100, 200, 255);
+width: 30%;
+}
+#dobD {
+position: absolute;
+top: 5%;
+left: 30%;
+height: 5%;
+background: rgb(160, 180, 255);
+width: 30%;
+}
+#breD {
+position: absolute;
+top: 5%;
+left: 60%;
+height: 5%;
+background: rgb(230, 230, 230);
+width: 40%;
+}
+#notD {
+position: absolute;
+top: 10%;
+left: 0%;
+height: 10%;
+background: rgb(180, 160, 255);
+width: 100%;
+}
+#nomV {
+position: absolute;
+top: 20%;
+left: 15%;
+height: 5%;
+width: 40%;
+}
+#nomD {
+position: absolute;
+top: 20%;
+left: 65%;
+height: 5%;
+width: 40%;
+}
+#vacD {
+position: absolute;
+top: 25%;
+left: 5%;
+height: 65%;
+width: 40%;
+background: rgb(185, 185, 185);
+overflow: scroll;
+}
+#antD {
+position: absolute;
+top: 25%;
+left: 55%;
+height: 65%;
+background: rgb(185, 185, 185);
+width: 40%;
+overflow: scroll;
+}
+#vacc {
+position: absolute;
+top: 92%;
+left: 10%;
+height: 6%;
+width: 30%;
+}
+#anti {
+position: absolute;
+top: 92%;
+left: 60%;
+height: 6%;
+width: 30%;
+}
+#calendar {
+position: absolute;
+top: 0%;
+left: 70%;
+height: 100%;
+background: rgb(215, 215, 255);
+width: 30%;
+}
+#dateDisplay {
+position: absolute;
+top: 0%;
+width: 70%;
+height: 10%;
+left: 15%;
+background: rgb(140, 140, 200);
+}
+#cal {
+position: absolute;
+top: 10%;
+width: 90%;
+height: 80%;
+left: 5%;
+background: rgb(200, 200, 255);
+}
+.container {
+position: relative;
+height: 5%;
+width:95%;
+margin-left: 2.5%;
+}
+.option{
+position: relative;
+width: 90%;
+height: 100%;
+top: 0%;
+left: 0%;
+background: rgb(240, 240, 255);
+}
+.del{
+position: absolute;
+width: 10%;
+height: 100%;
+top: 0%;
+left: 90%;
+background: red;
+}
+</style>
+</head>
+<body>
+<div id="clientDiv">
+<input type="text" oninput="wesley()" placeholder="search by client name" id="searchbar"></input>
+<div id="clientelle"></div>
+</div>
+<div id="infotable">
+<div class="clickable" id="clientD">name: </div>
+<div class="clickable" id="petD">pet: </div>
+<div class="clickable" id="genD">gender:</div>
+<div class="clickable" id="telD">tel:</div>
+<div class="clickable" id="dobD">d.o.b:</div>
+<div class="clickable" id="breD">breed:</div>
+<div class="clickable" id="notD">notes:</div>
+<div id="nomV">VACCINE</div>
+<div id="nomD">ANTICYST</div>
+<div id="vacD"></div>
+<div id="antD"></div>
+<button id="vacc">ADD NEXT</button>
+<button id="anti">ADD NEXT</button>
+</div>
+<div id="calendar">
+<div id="dateDisplay"></div>
+<div id="cal"></div>
+</div>
+<script>
+selected = undefined
+months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+
+function objectIndex(selected, arr) {
+selectedId = -1
+arr.forEach((x, i) => {
+if (selectedId == -1) {
+selectedId = i
+Object.keys(x).forEach((k) => {
+if (x[k] != selected[k] && k != "dateTable") {selectedId = -1}
+})
+}
+})
+return selectedId
+}
+
+if (localStorage.getItem("alpha") == null) {
+localStorage.setItem("alpha", JSON.stringify({"data": []}))
+}
+alpha = JSON.parse(localStorage.getItem("alpha"))
+displayedArr = alpha.data
+
+function prampt(x) {
+respn = window.prompt(x)
+if (respn[0] == "+") {
+t = parseInt(respn.split("+").join(""))
+thisday = new Date()
+thisday = thisday.getTime()
+daydiff = t*1000*60*60*24
+among = new Date(thisday + daydiff)
+among = among.toISOString().split('T')[0].split("-")
+among = months[parseInt(among[1]) - 1] + " " + among[2] + " " + among[0]
+return among
+}
+else if (respn.split("/").length == 3) {
+a = respn.split("/")
+return months[parseInt(a[0]) - 1] + " " + a[1] + " " + a[2]
+}
+else {
+return respn.toLowerCase()
+}
+}
+
+function addClient(){
+client = prampt("Client Name: ");
+pet = prampt("Pet Name: ");
+gen = prampt("Gender: ");
+tel = prampt("Client Cellphone: ");
+dob = prampt("date of birth: ");
+bre = prampt("Breed: ");
+not = prampt("notes: ");
+clientObj = {"client": client, "pet": pet, "gen": gen, "tel": tel, "dob": dob, "bre": bre, "not": not, "dateTable": [[], []]}
+nextVaccine = prampt("Next Vaccine (mon DD YYYY or +n or MM/DD/YYYY):");
+if (nextVaccine !=  "") {
+clientObj.dateTable[0].push(nextVaccine);
+}
+nextAntiCyst = prampt("Next AntiCyst (mon DD YYYY or +n or MM/DD/YYYY):");
+if (nextAntiCyst !=  "") {
+clientObj.dateTable[1].push(nextAntiCyst);
+}
+alpha.data.push(clientObj)
+localStorage.setItem("alpha", JSON.stringify(alpha))
+displayClient(alpha.data)
+queryPairs()
+displayDate(targetday)
+}
+
+
+function deleteClient(i, arr){
+awns = prampt("are you sure you want to delete " + arr[i].client + "? (y/n)")
+if (awns == "y") {
+if (arr[i] == selected) {
+select(undefined)
+}
+if (arr != alpha.data) {
+arr.splice(arr.indexOf(arr[i]), 1)
+}
+alpha.data.splice(alpha.data.indexOf(arr[i]), 1)
+localStorage.setItem("alpha", JSON.stringify(alpha))
+alpha = JSON.parse(localStorage.getItem("alpha"))
+displayClient(arr)
+queryPairs()
+displayDate(targetday)
+}
+}
+
+function deleteDate(i, obj, n) {
+awns = prampt("are you sure you want to delete " + obj.dateTable[n][i] + "? (y/n)")
+if (awns == "y") {
+objId = objectIndex(obj, alpha.data)
+obj.dateTable[n].splice(i, 1)
+alpha.data.forEach((cli, m) => {
+if (cli.client == obj.client){
+alpha.data[m] = obj
+}})
+displayedArr.forEach((cli, m) => {
+if (cli.client == selected.client){
+displayedArr[m] = selected
+}})
+localStorage.setItem("alpha", JSON.stringify(alpha))
+alpha = JSON.parse(localStorage.getItem("alpha"))
+obj = alpha.data[objId]
+selected = obj
+select(obj)
+queryPairs()
+displayDate(targetday)
+}
+}
+
+function dispSelected(obj, ddiv, n) {
+calfreezy = obj.dateTable[n]
+i = 0
+while (i < calfreezy.length) {
+if (calfreezy[i] != undefined) {
+option = document.createElement("p")
+option.innerHTML = calfreezy[i]
+option.className = "option"
+del = document.createElement("div")
+del.className = "del"
+del.addEventListener("click", deleteDate.bind(i, i, obj, n))
+container = document.createElement("div")
+container.className = "container"
+container.appendChild(option)
+container.appendChild(del)
+ddiv.appendChild(container)
+}
+i++
+}
+}
+
+function select(obj) {
+if (obj != undefined) {
+selected = obj
+displayClient(displayedArr)
+clientD.innerHTML = "name: " + obj.client
+petD.innerHTML = "pet: " + obj.pet
+genD.innerHTML = "gender: " + obj.gen
+telD.innerHTML = "tel: " + obj.tel
+notD.innerHTML = "notes: " + obj.not
+breD.innerHTML = "breed: " + obj.bre
+dobD.innerHTML = "d.o.b: " + obj.dob
+vacD.innerHTML = ""
+antD.innerHTML = ""
+dispSelected(obj, vacD, 0)
+dispSelected(obj, antD, 1)
+}
+else {
+selected = obj
+displayClient(displayedArr)
+clientD.innerHTML = "name: "
+petD.innerHTML = "pet: "
+genD.innerHTML = "gender: "
+telD.innerHTML = "tel: "
+notD.innerHTML = "notes: "
+breD.innerHTML = "breed: "
+dobD.innerHTML = "d.o.b: "
+vacD.innerHTML = ""
+antD.innerHTML = ""
+}
+}
+
+function displayClient(arr){
+displayedArr = arr
+clientelle.innerHTML = ""
+i = 0
+while (i < arr.length) {
+if (arr[i] != undefined) {
+option = document.createElement("p")
+option.innerHTML = arr[i].client
+option.className = "option"
+option.addEventListener("click", select.bind(i, arr[i]))
+if(arr[i] == selected){option.style.background = "rgb(100, 250, 250)"}
+del = document.createElement("div")
+del.className = "del"
+del.addEventListener("click", deleteClient.bind(i, i, arr))
+container = document.createElement("div")
+container.className = "container"
+container.appendChild(option)
+container.appendChild(del)
+clientelle.appendChild(container)
+}
+i++
+}
+}
+
+displayClient(alpha.data)
+
+function wesley() {
+rx = new RegExp(searchbar.value)
+b = alpha.data.filter((x) => {
+return rx.test(x.client)
+})
+displayClient(b)
+}
+
+function addVac(type, n) {
+if (selected != undefined) {
+newDate = prampt(type + " appointment (mon DD YYYY or +n or MM/DD/YYYY): ")
+selectedId = objectIndex(selected, alpha.data)
+selected.dateTable[n].unshift(newDate)
+alpha.data.forEach((cli, m) => {
+if (cli.client == selected.client){
+alpha.data[m] = selected
+}})
+displayedArr.forEach((cli, m) => {
+if (cli.client == selected.client){
+displayedArr[m] = selected
+}})
+localStorage.setItem("alpha", JSON.stringify(alpha))
+alpha = JSON.parse(localStorage.getItem("alpha"))
+selected = alpha.data[selectedId]
+queryPairs()
+select(selected)
+displayDate(targetday)
+}
+else {
+alert("select a client first!")
+}
+}
+
+vacc.addEventListener("click", addVac.bind(0, "vaccine", 0))
+anti.addEventListener("click", addVac.bind(0, "anti-cyst", 1))
+
+
+function queryPairs() {
+sexobj = {}
+dateClientPairs = []
+alpha.data.forEach((clientObj) => {
+clientObj.dateTable.forEach((vacArr, n) => {
+vacArr.forEach((date) => {
+if (n == 0) {
+morbius = "vac"
+dateClientPairs.push([date, clientObj.client, morbius])
+}
+else if (n == 1){morbius = "anti"
+dateClientPairs.push([date, clientObj.client, morbius])
+}
+})
+})
+})
+dateClientPairs.forEach((dateClientPair) => {
+today = dateClientPair[0]
+content = sexobj[today]
+if (content == undefined) {
+sexobj[today] = [dateClientPair[1] + "|" + dateClientPair[2]]
+}
+else {
+sexobj[today].push(dateClientPair[1] + "|" + dateClientPair[2])
+}
+})
+}
+queryPairs()
+
+
+function displayDate(d8) {
+cal.innerHTML = ""
+dateDisplay.innerHTML = d8
+if (sexobj[d8] != undefined) {
+sexobj[d8].forEach((appointment) => {
+option = document.createElement("p")
+option.innerHTML = appointment
+option.className = "option"
+container = document.createElement("div")
+container.className = "container"
+container.appendChild(option)
+cal.appendChild(container)
+})
+}
+}
+
+Array.from(document.getElementsByClassName("clickable")).forEach((el) => {
+el.addEventListener("click", () => {
+if (selected != undefined) {
+newval = prampt("change " + el.innerHTML.split(":")[0] + " value from " +el.innerHTML.split(":")[1] + " to:") 
+el.innerHTML = el.innerHTML.split(":")[0] + ": " + newval
+selectedId = objectIndex(selected, alpha.data)
+selected[el.id.split("D").join("")] = newval
+alpha.data.forEach((cli, m) => {
+if (cli.client == selected.client){
+alpha.data[m] = selected
+}})
+displayedArr.forEach((cli, m) => {
+if (cli.client == selected.client){
+displayedArr[m] = selected
+}})
+localStorage.setItem("alpha", JSON.stringify(alpha))
+alpha = JSON.parse(localStorage.getItem("alpha"))
+selected = alpha.data[selectedId]
+queryPairs()
+displayDate(targetday)
+select(selected)
+}
+})
+})
+
+doday = new Date()
+targetday = doday.toISOString().split('T')[0].split("-")
+targetday = months[parseInt(targetday[1]) - 1] + " " + targetday[2] + " " + targetday[0]
+displayDate(targetday)
+
+
+function change(n) {
+doday = new Date(doday.getTime() + n*1000*60*60*24)
+targetday = doday.toISOString().split('T')[0].split("-")
+targetday = months[parseInt(targetday[1]) - 1] + " " + targetday[2] + " " + targetday[0]
+displayDate(targetday)
+}
+
+
+
+window.addEventListener("keydown", function(e){
+if (e.key == "ArrowUp") {
+addClient()
+}
+if (e.key == "ArrowLeft") {
+change(-1)
+}
+if (e.key == "ArrowRight") {
+change(+1)
+}
+})
+
+</script>
+</body>
+</html>
+
