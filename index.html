@@ -164,6 +164,14 @@ height: 80%;
 left: 5%;
 background: rgb(200, 200, 255);
 }
+#saveclientinfo {
+position: absolute;
+top: 85%;
+width: 10%;
+height: 80%;
+left: 5%;
+background: rgb(132, 231, 123);
+}
 .container {
 position: relative;
 height: 5%;
@@ -211,6 +219,7 @@ background: red;
 <div id="calendar">
 <div id="dateDisplay"></div>
 <div id="cal"></div>
+<div id="saveclientinfo">SAVE</div>
 </div>
 <script>
 alert("hit the DOWN arrow to see the list of instructions")  
@@ -321,7 +330,7 @@ select(obj)
 queryPairs()
 displayDate(targetday)
 }
-}
+}  
 
 function dispSelected(obj, ddiv, n) {
 calfreezy = obj.dateTable[n]
